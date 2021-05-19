@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "npx http-server --port 8081 .",
+        "start": "npx http-server -c-1 --port 8081 .",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "devDependencies": {
