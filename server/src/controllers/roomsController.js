@@ -6,6 +6,10 @@ export default class RomsController {
         console.log('connection stableshid with', id)
     }
 
+    joinRoom(socket, data) {
+        console.log('dados recebidos', data)
+    }
+
     getEvents() {
         const functions = Reflect.ownKeys(RomsController.prototype)
             .filter(fn => fn !== 'constructor')
