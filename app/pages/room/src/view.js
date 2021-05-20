@@ -16,6 +16,10 @@ export default class View {
         roomTopic.innerHTML = topic
     }
 
+    static updateAttendeesOnGrid(users) {
+        users.forEach(item => View.addAttendeeOnGrid(item))
+    }
+
     static addAttendeeOnGrid(item){
         const attendee = new Attendee(item)
         const htmlTemplate = getTemplate(attendee)
