@@ -15,7 +15,7 @@ export default class SocketBuilder {
     }
 
     setOnUserDisconnected(fn) { 
-        this.OnUserDisconnected = fn
+        this.onUserDisconnected = fn
         
         return this
     }

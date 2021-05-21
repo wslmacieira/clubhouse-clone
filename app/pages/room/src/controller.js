@@ -31,7 +31,18 @@ export default class RoomController {
             .setOnUserConnected(this.onUserConnected())
             .setOnUserDisconnected(this.onDisconnected())
             .setOnRoomUpdated(this.onRoomUpdated())
+            .setOnUserProfileUpgrade(this.onUserProfileUpgrade())
             .build()
+    }
+
+    onUserProfileUpgrade() {
+        return (data) => { 
+            const attendee = new Attendee(data)
+            console.log('onUserProfileUpgrade', attendee)
+            if(attendee.isSpeaker) {
+                this.view.addAttendeeOnGrid(attendee, true)
+            }
+        }
     }
 
     onRoomUpdated() {
@@ -42,7 +53,11 @@ export default class RoomController {
     }
 
     onDisconnected() {
-        return (user) => console.log('user disconnected!', user)
+        return (data) => {
+            const attendee = new Attendee(data)
+            console.log(`${attendee.username} disconnected!`)
+            this.view.removeItemFromGrid(attendee.id)
+        }
     }
 
     onUserConnected() {
