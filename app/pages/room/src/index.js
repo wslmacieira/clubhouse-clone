@@ -1,11 +1,12 @@
 import { constants } from "../../_shared/constants.js"
+import PeerBuilder from "../../_shared/peerBuilder.js"
 import RoomController from "./controller.js"
+import RoomService from "./service.js"
 import RoomSocketBuilder from "./util/roomSocket.js"
 import View from "./view.js"
 
 const urlParams = new URLSearchParams(window.location.search)
 const keys = ['id', 'topic']
-
 const urlData = keys.map((key) => [key, urlParams.get(key)])
 
 const user = {
@@ -18,16 +19,23 @@ const roomInfo = {
     user
 }
 
+const peerBuilder = new PeerBuilder({
+    peerConfig: constants.peerConfig
+})
 
 const socketBuilder = new RoomSocketBuilder({
     socketUrl: constants.sockeUrl,
     namespace: constants.socketNamespaces.room
 })
 
+const roomService = new RoomService()
+
 const dependecies = {
     view: View,
     socketBuilder,
-    roomInfo
+    roomInfo,
+    roomService,
+    peerBuilder
 }
 
 await RoomController.initialize(dependecies)

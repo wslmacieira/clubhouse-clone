@@ -2,10 +2,12 @@ import { constants } from "../../_shared/constants.js"
 import Attendee from "./entities/attendee.js"
 
 export default class RoomController {
-    constructor({ roomInfo, socketBuilder, view }) {
+    constructor({ roomInfo, socketBuilder, view, peerBuilder, roomService }) {
         this.socketBuilder = socketBuilder
+        this.peerBuilder = peerBuilder
         this.roomInfo = roomInfo
         this.view = view
+        this.roomService = roomService
 
         this.socket = {}
     }
@@ -17,8 +19,7 @@ export default class RoomController {
     async _initialize() {
         this._setupViewEvents()
         this.socket = this._setupSocket()
-
-        this.socket.emit(constants.events.JOIN_ROOM, this.roomInfo)
+        this.roomService.setCurrentPeer(await this._setupWebRTC())
     }
 
     _setupViewEvents() {
@@ -35,20 +36,46 @@ export default class RoomController {
             .build()
     }
 
+    async _setupWebRTC() {
+        return this.peerBuilder
+            .setOnError(this.onPeerErro())
+            .setOnConnectionOpened(this.onPeerConnectionopened())
+            .build()
+    }
+
+    onPeerErro() {
+        return (error) => { 
+            console.log('deu ruim', error);
+        }
+    }
+    // quando a conexão for aberta ele pede para entrar na sala do socket
+    onPeerConnectionopened() {
+        return (peer) => {
+            console.log('peeeer', peer)
+            this.roomInfo.user.peerId = peer.id
+            this.socket.emit(constants.events.JOIN_ROOM, this.roomInfo)
+         }
+    }
+
     onUserProfileUpgrade() {
-        return (data) => { 
+        return (data) => {
             const attendee = new Attendee(data)
             console.log('onUserProfileUpgrade', attendee)
-            if(attendee.isSpeaker) {
+            this.roomService.upgradeUserPermission(attendee)
+            if (attendee.isSpeaker) {
                 this.view.addAttendeeOnGrid(attendee, true)
             }
+            this.activeUserFeatures()
         }
     }
 
     onRoomUpdated() {
-        return (room) => {
-            this.view.updateAttendeesOnGrid(room)
-            console.log('room list!', room)
+        return (data) => {
+            const users = data.map(item => new Attendee(item))
+            this.roomService.updateCurrentUserProfile(users)
+            this.view.updateAttendeesOnGrid(users)
+            this.activeUserFeatures()
+            console.log('room list!', users)
         }
     }
 
@@ -66,5 +93,10 @@ export default class RoomController {
             console.log('user connected!', attendee)
             this.view.addAttendeeOnGrid(attendee)
         }
+    }
+
+    activeUserFeatures() {
+        const currentUser = this.roomService.getCurrentUser()
+        this.view.showUserFeatures(currentUser.isSpeaker)
     }
 }
