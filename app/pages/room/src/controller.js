@@ -18,6 +18,7 @@ export default class RoomController {
 
     async _initialize() {
         this._setupViewEvents()
+        this.roomService.init()
         this.socket = this._setupSocket()
         this.roomService.setCurrentPeer(await this._setupWebRTC())
     }
@@ -39,22 +40,59 @@ export default class RoomController {
     async _setupWebRTC() {
         return this.peerBuilder
             .setOnError(this.onPeerErro())
-            .setOnConnectionOpened(this.onPeerConnectionopened())
+            .setOnConnectionOpened(this.onPeerConnectionOpened())
+            .setOnCallReceived(this.onCallReceived())
+            .setOnCallError(this.onCallError())
+            .setOncallClose(this.onCallClose())
+            .setOnStreamReceived(this.onStreamReceived())
             .build()
     }
 
+    onStreamReceived() {
+        return (call, stream) => {
+            const callerId = call.peer
+            console.log('onStreamReceived', call, stream)
+            const { isCurrentId } = this.roomService.addReceivedPeer(call)
+            this.view.renderAudioElement({
+                callerId,
+                stream,
+                isCurrentId
+            })
+        }
+    }
+
+    onCallClose() {
+        return (call) => {
+            console.log('onCallClose', call)
+        }
+    }
+
+    onCallError() {
+        return (call, error) => {
+            console.log('onCallError', call, error)
+        }
+    }
+
+    onCallReceived() {
+        return async (call) => {
+            const stream = await this.roomService.getCurrentStream()
+            console.log('answering call', call, stream)
+            call.answer(stream)
+        }
+    }
+
     onPeerErro() {
-        return (error) => { 
+        return (error) => {
             console.log('deu ruim', error);
         }
     }
     // quando a conexão for aberta ele pede para entrar na sala do socket
-    onPeerConnectionopened() {
+    onPeerConnectionOpened() {
         return (peer) => {
             console.log('peeeer', peer)
             this.roomInfo.user.peerId = peer.id
             this.socket.emit(constants.events.JOIN_ROOM, this.roomInfo)
-         }
+        }
     }
 
     onUserProfileUpgrade() {
@@ -92,6 +130,9 @@ export default class RoomController {
             const attendee = new Attendee(data)
             console.log('user connected!', attendee)
             this.view.addAttendeeOnGrid(attendee)
+
+            // vamos ligar!!
+            this.roomService.callNewUser(attendee)
         }
     }
 

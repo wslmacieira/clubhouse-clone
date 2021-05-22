@@ -54,6 +54,27 @@ export default class View {
         baseElement.innerHTML += htmlTemplate
     }
 
+    static _createAudioElement({muted = true, srcObject}) {
+        const audio = document.createElement('audio')
+        audio.muted = muted
+        audio.srcObject = srcObject
+
+        audio.addEventListener('loadedmetadata', async () => {
+            try {
+                await audio.play()
+            } catch (error) {
+                console.error('erro to play', error)
+            }
+        })
+    }
+
+    static renderAudioElement({ callerId, stream, isCurrentId }) {
+        View._createAudioElement({
+            muted: isCurrentId,
+            srcObject: stream
+        })
+    }
+
     static showUserFeatures(isSpeaker) {
         // attendee
         if (!isSpeaker) {
