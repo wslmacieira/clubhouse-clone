@@ -2,6 +2,7 @@ import UserStream from "./entities/userStream.js"
 export default class RoomService {
     constructor({ media }) {
         this.media = media
+
         this.currentPeer = {}
         this.currentUser = {}
         this.currentStream = {}
@@ -11,7 +12,8 @@ export default class RoomService {
 
     async init() {
         this.currentStream = new UserStream({
-            stream: await this.media.getUserAudio()
+            stream: await this.media.getUserAudio(),
+            isFake: false
         })
     }
 
@@ -51,6 +53,13 @@ export default class RoomService {
 
         const isCurrentId = calledId === this.currentUser.id
         return { isCurrentId }
+    }
+
+    disconnectPeer({ peerId }) {
+        if(!this.peers.has(peerId)) return;
+
+        this.peers.get(peerId).call.close()
+        this.peers.delete(peerId)
     }
 
     async callNewUser(user) {
