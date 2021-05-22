@@ -1,12 +1,28 @@
 import Attendee from "../entities/attendee.js"
 import Room from "../entities/room.js"
 import { constants } from "../util/constants.js"
+import CustomMap from "../util/customMap.js"
 
 export default class RomsController {
     #users = new Map()
 
-    constructor() {
-        this.rooms = new Map()
+    constructor({ roomsPubSub }) {
+        this.roomsPubSub = roomsPubSub
+        this.rooms = new CustomMap({
+            observer: this.#roomObserver(),
+            customMapper: this.#mapRoom.bind(this)
+        })
+    }
+
+    #roomObserver() {
+        return {
+            notify: (rooms) => this.notifyRoomSubscribers(rooms)
+        }
+    }
+
+    notifyRoomSubscribers(rooms) {
+        const event = constants.events.LOBBY_UPDATED
+        this.roomsPubSub.emit(event, [...rooms.values()])
     }
 
     onNewConnection(socket) {
@@ -39,7 +55,7 @@ export default class RomsController {
         room.users.delete(toBeRemoved)
 
         // se não tiver mais nenhum usuario na sala, matamos a sala
-        if(!room.users.size) {
+        if (!room.users.size) {
             this.rooms.delete(roomId)
             return;
         }
@@ -48,7 +64,7 @@ export default class RomsController {
         const onlyOneUserLeft = room.users.size === 1
 
         // validar se tem somente um usuario ou se o usuario era o dono
-        if(onlyOneUserLeft || disconnectedUserWasAnOwner) {
+        if (onlyOneUserLeft || disconnectedUserWasAnOwner) {
             room.owner = this.#getNewRoomOwner(room, socket)
         }
 
@@ -66,7 +82,7 @@ export default class RomsController {
 
     #getNewRoomOwner(room, socket) {
         const users = [...room.users.values()]
-        const activeSpeakers =  users.find(user => user.isSpeaker)
+        const activeSpeakers = users.find(user => user.isSpeaker)
         // se quem desconectou era o dono, passa a liderança para o proximo
         // se não houver speakers, ele pega o attendee mais antigo (primeira posição)
         const [newOwner] = activeSpeakers ? [activeSpeakers] : users
