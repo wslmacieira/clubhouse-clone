@@ -16,7 +16,7 @@ const user = {
 }
 
 const roomInfo = {
-    room: {...Object.fromEntries(urlData)},
+    room: { ...Object.fromEntries(urlData) },
     user
 }
 
@@ -41,5 +41,8 @@ const dependecies = {
     peerBuilder
 }
 
-await RoomController.initialize(dependecies)
+RoomController.initialize(dependecies)
+    .catch(error => {
+        alert(error.message)
+    })
 

@@ -50,7 +50,7 @@ Marque esse projeto com uma estrela 🌟
           - [X] Promove o speaker mais velho da sala
           - [X] Se não houver speaker promove o attendee mais velho da sala
     - Attendee
-      - [ ] Pode ouvir speakers ativos
+      - [X] Pode ouvir speakers ativos
       - [ ] Pode pedir upgrade de perfil ao dono da sala
         - Ao ser aprovado
           - [ ] Reinicia todas as suas chamas ativas com os usuarios da sala

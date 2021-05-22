@@ -27,6 +27,7 @@ export default class RoomController {
     _setupViewEvents() {
         this.view.updateUserImage(this.roomInfo.user)
         this.view.updateRoomTopic(this.roomInfo.room)
+        this.view.configureClapButton(() => console.log('clicou!!!'))
     }
 
     _setupSocket() {
@@ -54,10 +55,11 @@ export default class RoomController {
             const callerId = call.peer
             console.log('onStreamReceived', call, stream)
             const { isCurrentId } = this.roomService.addReceivedPeer(call)
+            console.warn('audio desabilitado')
             this.view.renderAudioElement({
                 callerId,
                 stream,
-                isCurrentId
+                isCurrentId: true
             })
         }
     }
