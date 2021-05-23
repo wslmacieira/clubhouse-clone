@@ -31,7 +31,7 @@ export default class SocketServer {
                 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
             })
 
-            response.end('hey there!')
+            response.end('hey there!!')
         })
 
         this.#io = new Server(server, {

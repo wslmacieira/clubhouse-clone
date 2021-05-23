@@ -140,10 +140,11 @@ export default class RoomController {
     onRoomUpdated() {
         return (data) => {
             const users = data.map(item => new Attendee(item))
-            this.roomService.updateCurrentUserProfile(users)
-            this.view.updateAttendeesOnGrid(users)
-            this.activeUserFeatures()
             console.log('room list!', users)
+
+            this.view.updateAttendeesOnGrid(users)
+            this.roomService.updateCurrentUserProfile(users)
+            this.activeUserFeatures()
         }
     }
 

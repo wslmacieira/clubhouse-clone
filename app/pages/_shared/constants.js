@@ -1,5 +1,6 @@
 export const constants = {
     sockeUrl: 'http://localhost:3000',
+    // sockeUrl: 'https://dwll-socket-server.herokuapp.com/',
     socketNamespaces: {
         room: 'room',
         lobby: 'lobby'
@@ -7,6 +8,10 @@ export const constants = {
     peerConfig: Object.values({
         id: undefined,
         // config: {
+        //     // host: 'dwll-peersjs-server.herokuapp.com',
+        //     // secure: true,
+        //     // path: '/'
+
         //     port: 9000,
         //     host: 'localhost',
         //     path: '/'
