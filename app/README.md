@@ -22,8 +22,8 @@ Marque esse projeto com uma estrela 🌟
 
 - [ ] O app deve funcionar na Web, Android e IOS
 - Login
-  - [ ] Deve ter login com GitHub
-    - [ ] Se houver dados do usuario em localStorage deve ir para lobby direto
+  - [X] Deve ter login com GitHub
+    - [X] Se houver dados do usuario em localStorage deve ir para lobby direto
 
 - Lobby
   - [ ] Se não houver dados do usuario em localStorage deve voltar para login
