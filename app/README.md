@@ -26,7 +26,7 @@ Marque esse projeto com uma estrela 🌟
     - [X] Se houver dados do usuario em localStorage deve ir para lobby direto
 
 - Lobby
-  - [ ] Se não houver dados do usuario em localStorage deve voltar para login
+  - [X] Se não houver dados do usuario em localStorage deve voltar para login
   - [X] Mostra todas as salas ativas
   - [X] Atualiza salas em realtime
   - [X] Pode criar uma sala sem topico

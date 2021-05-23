@@ -1,3 +1,4 @@
+import { constants } from "../../_shared/constants.js";
 import Room from "./entities/room.js";
 import getTemplate from "./templates/lobbyItem.js";
 
@@ -17,10 +18,14 @@ export default class View {
         return `./../room/index.html?id=${id}&topic=${topic}`
     }
 
+    static redirectToLogin() {
+        window.location = constants.pages.login
+    }
+
     static redirectToRoom(topic = '') {
         const id = Date.now().toString(36) + Math.round().toString(36).substring(2)
         window.location = View.generateRoomLink({
-            id, 
+            id,
             topic
         })
     }
