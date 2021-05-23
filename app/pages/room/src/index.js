@@ -43,6 +43,6 @@ const dependecies = {
 
 RoomController.initialize(dependecies)
     .catch(error => {
-        alert(error.message)
+        console.log('error ->', error);
     })
 

@@ -31,7 +31,7 @@ export default class RomsController {
 
         const roomId = user.roomId
         const room = this.rooms.get(roomId)
-        const userOnRoom = [...rom.users.values()].find(({ id }) => id === userId)
+        const userOnRoom = [...room.users.values()].find(({ id }) => id === userId)
         room.users.delete(userOnRoom)
         room.users.add(updatedUser)
         this.rooms.set(roomId, room)
